@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# -----------------------------------------------------------------------------
+# [ Ceph Nodes ]
+# -----------------------------------------------------------------------------
+
+#  ceph monitor node list, hostname or ip address
+ceph_monitor_list=( mon01 mon02 mon03 )
+
+#  ceph osd node list, hostname or ip address
+ceph_osd_list=( ceph )
+
+
+# -----------------------------------------------------------------------------
+# [ Ceph Paths ]
+# -----------------------------------------------------------------------------
+
+#  path of ceph dir
+var_lib_ceph='/var/lib/ceph'
+
+#  path of ceph osd dir
+var_lib_ceph_osd='/var/lib/ceph/osd'
+
+#  path of ceph config dir
+etc_ceph='/etc/ceph'
+
+#  path of ceph log dir, set as empty string to ignore backup it
+#var_log_ceph='/var/lib/ceph'
+var_log_ceph=''
+
+#  osd prefix
+osd_prefix='ceph-'
+
+#  temperary osd directory list file
+osd_list='/tmp/osds'
+
+# -----------------------------------------------------------------------------
+# [ Backup/Restore Commands ]
+#------------------------------------------------------------------------------
+
+#  tar command - create
+tar_create_cmd='/bin/tar -czpf '
+
+#  tar command - extract
+tar_extract_cmd='/bin/tar -C / -xvpf '
+
+#  xfsdump command
+xfsdump_cmd='/usr/sbin/xfsdump '
+
+#  xfsrestore command
+xfsrestore_cmd='/usr/sbin/xfsrestore '
+
+
+# -----------------------------------------------------------------------------
+# [ Backup File Setting ]
+# -----------------------------------------------------------------------------
+
+#  local directory for store backuped tar file of ceph cluster
+backup_directory='./ceph_backup/'
+
+#  temp directory in ceph nodes for temperary store backuped file, make sure
+#  enough space for storing ceph files
+temp_directory='/tmp/'
+
+#  get current date-time, or directly set an timepoint you like
+#time_point=$(date +"%Y_%m_%d_%H_%M_%S")
+#time_point=$(date +"%Y%m%d_%H%M%S")
+time_point=$(date +"%Y%m%d%H%M%S")
+
+#  backup interval in second between each ceph node
+interval=1
+
+#  tar filename extension
+tar_extension='.tar.gz'
+
+
+# -----------------------------------------------------------------------------
+# [ Start/Stop Ceph Daemon Command ]
+# -----------------------------------------------------------------------------
+#  choose ubuntu version, 14.04 or 16.04
+ubuntu_version='14.04'
+
+#  choose command setting base on ubuntu_version
+if [ "${ubuntu_version}" == "14.04" ]; then
+    #  - ubuntu 14.04
+    ceph_mon_start='start ceph-mon id='
+    ceph_mon_stop='stop ceph-mon id='
+    ceph_mon_status='status ceph-mon id='
+    ceph_osd_start='start ceph-osd id='
+    ceph_osd_stop='stop ceph-osd id='
+    ceph_osd_status='status ceph-osd id='
+elif [ "${ubuntu_version}" == "16.04" ]; then
+    #  - ubuntu 16.04
+    ceph_mon_start='systemctl start ceph-mon@'
+    ceph_mon_stop='systemctl stop ceph-mon@'
+    ceph_mon_status='systemctl status ceph-mon@'
+    ceph_osd_start='systemctl start ceph-osd@'
+    ceph_osd_stop='systemctl stop ceph-osd@'
+    ceph_osd_status='systemctl status ceph-osd@'
+fi
