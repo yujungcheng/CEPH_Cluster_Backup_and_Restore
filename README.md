@@ -1,3 +1,5 @@
+請用 RAW 模式觀看
+
 # ceph_backup_restore
 說明：
   1. 備份 ceph monitor 與 osd 上的 /var/lib/ceph 與 /etc/ceph 兩個資料夾。/var/lib/ceph 內儲存各 ceph 角色的資料，/etc/ceph 儲存 ceph 的設定與 keyring 等檔案。亦可額外備份 /var/log/ceph 資料夾。
